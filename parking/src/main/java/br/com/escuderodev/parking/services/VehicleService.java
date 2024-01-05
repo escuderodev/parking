@@ -33,8 +33,8 @@ public class VehicleService {
         return repository.findById(id);
     }
 
-    public Vehicle create(VehicleRegistrationData data, Driver driver) {
-        var typedDriver = driverRepository.getReferenceById(driver.getId());
+    public Vehicle create(VehicleRegistrationData data, Long id) {
+        var typedDriver = driverRepository.getReferenceById(id);
         var vehicle = new Vehicle(data,typedDriver);
         return repository.save(vehicle);
     }
