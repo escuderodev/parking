@@ -1,6 +1,5 @@
 package br.com.escuderodev.parking.models.driver;
 
-import br.com.escuderodev.parking.models.vehicle.Vehicle;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
