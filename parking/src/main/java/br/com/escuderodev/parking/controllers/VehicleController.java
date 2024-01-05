@@ -58,5 +58,4 @@ public class VehicleController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }
