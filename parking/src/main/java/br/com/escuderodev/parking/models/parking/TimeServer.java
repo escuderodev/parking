@@ -3,9 +3,10 @@ package br.com.escuderodev.parking.models.parking;
 import java.time.LocalDateTime;
 
 public class TimeServer {
-    private LocalDateTime timeServer = LocalDateTime.now();
+    private LocalDateTime timeServer;
 
     public LocalDateTime getTimeServer() {
-        return timeServer;
+
+        return timeServer = LocalDateTime.now();
     }
 }

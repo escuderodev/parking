@@ -1,8 +1,10 @@
 package br.com.escuderodev.parking.controllers;
 
+import br.com.escuderodev.parking.models.parking.ParkingListData;
+import br.com.escuderodev.parking.models.parking.ParkingManagement;
+import br.com.escuderodev.parking.models.parking.ParkingRegistrationData;
 import br.com.escuderodev.parking.models.vehicle.Vehicle;
-import br.com.escuderodev.parking.models.vehicle.VehicleListData;
-import br.com.escuderodev.parking.models.vehicle.VehicleRegistrationData;
+import br.com.escuderodev.parking.services.ParkingService;
 import br.com.escuderodev.parking.services.VehicleService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -13,7 +15,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.util.Optional;
 
 @RestController
@@ -22,39 +23,38 @@ import java.util.Optional;
 public class ParkingController {
 
     @Autowired
-    private VehicleService service;
+    private ParkingService service;
+
     @GetMapping
-    public ResponseEntity<Page<VehicleListData>> findAllVehicle(@PageableDefault(size = 10, page = 0, sort = {"id"}) Pageable pagination) {
+    public ResponseEntity<Page<ParkingListData>> findAllParking(@PageableDefault(size = 10, page = 0, sort = {"id"}) Pageable pagination) {
         var page = service.findAll(pagination);
         return ResponseEntity.ok(page);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Vehicle>> findVehicleById(@PathVariable Long id) {
-        var vehicle = service.findById(id);
-        return ResponseEntity.ok(vehicle);
+    public ResponseEntity<Optional<ParkingManagement>> findParkingById(@PathVariable Long id) {
+        var parking = service.findById(id);
+        return ResponseEntity.ok(parking);
     }
 
     @PostMapping("/{id}")
     @Transactional
-    public ResponseEntity registerVehicle(@PathVariable Long id, @RequestBody @Valid VehicleRegistrationData data, UriComponentsBuilder uriBuilder) {
-        var vehicle = service.create(data, id);
-        var uri = uriBuilder.path("drivers/{id}").buildAndExpand(vehicle.getId()).toUri();
-        return ResponseEntity.created(uri).body(vehicle);
+    public ResponseEntity startParking(@PathVariable Long id, @RequestBody @Valid ParkingRegistrationData data, UriComponentsBuilder uriBuilder) {
+        var parking = service.create(data, id);
+        var uri = uriBuilder.path("parking/{id}").buildAndExpand(parking.getId()).toUri();
+        return ResponseEntity.created(uri).body(parking);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity updateVehicle(@RequestBody @Valid Vehicle vehicle) {
-        var typedVehicle = vehicle;
-        service.update(typedVehicle);
-        var updatedVehicle = service.findById(typedVehicle.getId());
-        return ResponseEntity.ok(updatedVehicle);
+    public ResponseEntity stopParking(@PathVariable Long id) {
+        var updatedParking = service.update(id);
+        return ResponseEntity.ok(updatedParking);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity deleteVehicle(@PathVariable Long id) {
+    public ResponseEntity deleteParking(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

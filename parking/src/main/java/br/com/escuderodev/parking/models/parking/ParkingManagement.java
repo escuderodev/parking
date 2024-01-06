@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
-
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,14 +17,13 @@ import java.time.LocalDateTime;
 public class ParkingManagement {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(EnumType.STRING)
     private String paymentMethod;
     private BigDecimal fixedParkingPrice = new BigDecimal(10.00);
     private BigDecimal variableParkingPrice = new BigDecimal(15.00);
     private LocalDateTime startParking;
     private LocalDateTime stopParking;
-    private Integer usageTime;
-    private Integer fixedTime;
+    private Long usageTime;
+    private Long fixedTime;
     private BigDecimal amountToPay;
     @ManyToOne
     private Vehicle vehicle;
@@ -43,20 +41,28 @@ public class ParkingManagement {
 
     //    metodos auxiliares
     public void startParking() {
-        if (this.fixedTime != null) {
+        TimeServer timeServer = new TimeServer();
+
+        if (this.fixedTime != null && this.fixedTime != 0) {
             this.amountToPay = this.fixedParkingPrice.multiply(BigDecimal.valueOf(this.fixedTime));
-            this.startParking = LocalDateTime.now();
-            this.stopParking = LocalDateTime.now().plusHours(this.fixedTime);
+            this.startParking = timeServer.getTimeServer();
+            this.stopParking =  this.startParking.plusHours(this.fixedTime);
+            this.usageTime= this.fixedTime;
+//            incluir validação de paymentMethod
         } else {
-            this.startParking = LocalDateTime.now();
+            this.startParking = timeServer.getTimeServer();
         }
     }
 
-    public void calculatesUsageTime() {
+    public void stopParking() {
+        TimeServer timeServer = new TimeServer();
+
         if (this.startParking != null) {
-            this.stopParking = LocalDateTime.now();
+            this.stopParking = timeServer.getTimeServer(); //.plusHours(2);
             Duration parkedTime = Duration.between(startParking,stopParking);
-            this.usageTime = Math.toIntExact(parkedTime.toHours());
+            System.out.println(parkedTime);
+            this.usageTime = parkedTime.toHours() + 1;
+            System.out.println(this.usageTime);
             this.amountToPay = this.variableParkingPrice.multiply(BigDecimal.valueOf(usageTime));
 
             System.out.println("Inicio registrado às: " + startParking);

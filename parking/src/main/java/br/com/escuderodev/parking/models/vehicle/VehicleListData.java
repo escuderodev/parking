@@ -11,6 +11,6 @@ public record VehicleListData(
         Driver driver
 ) {
     public VehicleListData(Vehicle vehicle) {
-        this(vehicle.getId(), vehicle.getBrand(), vehicle.getModel(), vehicle.getBrand(), vehicle.getDriver());
+        this(vehicle.getId(), vehicle.getBrand(), vehicle.getModel(), vehicle.getPlate(), vehicle.getDriver());
     }
 }

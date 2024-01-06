@@ -11,7 +11,7 @@ public record ParkingListData(
         BigDecimal variableParkingPrice,
         LocalDateTime startParking,
         LocalDateTime stopParking,
-        Integer usageTime,
+        Long usageTime,
         BigDecimal amountToPay,
         Vehicle vehicle
 ) {

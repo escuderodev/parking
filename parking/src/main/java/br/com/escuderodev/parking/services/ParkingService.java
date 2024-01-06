@@ -1,13 +1,10 @@
 package br.com.escuderodev.parking.services;
 
-import br.com.escuderodev.parking.models.driver.DriverRepository;
 import br.com.escuderodev.parking.models.parking.ParkingListData;
 import br.com.escuderodev.parking.models.parking.ParkingManagement;
 import br.com.escuderodev.parking.models.parking.ParkingRegistrationData;
 import br.com.escuderodev.parking.models.parking.ParkingRepository;
 import br.com.escuderodev.parking.models.vehicle.Vehicle;
-import br.com.escuderodev.parking.models.vehicle.VehicleListData;
-import br.com.escuderodev.parking.models.vehicle.VehicleRegistrationData;
 import br.com.escuderodev.parking.models.vehicle.VehicleRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +37,9 @@ public class ParkingService {
         return parkingRepository.save(parking);
     }
 
-    public ParkingManagement update(ParkingManagement parking) {
-        var typedParking = parkingRepository.getReferenceById(parking.getId());
-        typedParking.calculatesUsageTime();
+    public ParkingManagement update(Long id) {
+        var typedParking = parkingRepository.getReferenceById(id);
+        typedParking.stopParking();
         return typedParking;
     }
 
