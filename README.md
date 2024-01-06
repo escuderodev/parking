@@ -59,3 +59,6 @@ selecionadas.
 por mais uma hora, a menos que o condutor desligue o registro.
 7. Quando o tempo de estacionamento é encerrado, o sistema emite um recibo para o condutor.
 Pós-Tech Arquitetura e Desenvolvimento JAVA – 1ADJT Página 2 de 2
+
+# Documentação da API com Swagger:
+- http://localhost:8080/swagger-ui/index.html#/
