@@ -48,7 +48,7 @@ public class ParkingManagement {
             this.startParking = timeServer.getTimeServer();
             this.stopParking =  this.startParking.plusHours(this.fixedTime);
             this.usageTime= this.fixedTime;
-//            incluir validação de paymentMethod
+//            incluir emissão de recibos e alertas
         } else {
             this.startParking = timeServer.getTimeServer();
         }
