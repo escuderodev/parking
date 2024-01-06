@@ -60,15 +60,9 @@ public class ParkingManagement {
         if (this.startParking != null) {
             this.stopParking = timeServer.getTimeServer(); //.plusHours(2);
             Duration parkedTime = Duration.between(startParking,stopParking);
-            System.out.println(parkedTime);
             this.usageTime = parkedTime.toHours() + 1;
-            System.out.println(this.usageTime);
             this.amountToPay = this.variableParkingPrice.multiply(BigDecimal.valueOf(usageTime));
 
-            System.out.println("Inicio registrado às: " + startParking);
-            System.out.println("Saida registrada em " + stopParking);
-            System.out.println("Tempo estacionado: " + parkedTime);
-            System.out.println("Tempo total estacionado: " + usageTime + " horas.");
         } else {
             System.out.println("Erro: registro de entrada não encontrado!");
 
