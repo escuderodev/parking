@@ -1,7 +1,5 @@
 package br.com.escuderodev.parking.models.driver;
 
-import br.com.escuderodev.parking.models.vehicle.Vehicle;
-
 public record DriverListData(
         Long id,
         String name,
