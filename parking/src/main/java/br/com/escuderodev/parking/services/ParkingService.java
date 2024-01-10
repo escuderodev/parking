@@ -4,14 +4,15 @@ import br.com.escuderodev.parking.models.parking.ParkingListData;
 import br.com.escuderodev.parking.models.parking.ParkingManagement;
 import br.com.escuderodev.parking.models.parking.ParkingRegistrationData;
 import br.com.escuderodev.parking.models.parking.ParkingRepository;
-import br.com.escuderodev.parking.models.vehicle.Vehicle;
 import br.com.escuderodev.parking.models.vehicle.VehicleRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ParkingService {

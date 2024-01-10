@@ -3,9 +3,7 @@ package br.com.escuderodev.parking.controllers;
 import br.com.escuderodev.parking.models.parking.ParkingListData;
 import br.com.escuderodev.parking.models.parking.ParkingManagement;
 import br.com.escuderodev.parking.models.parking.ParkingRegistrationData;
-import br.com.escuderodev.parking.models.vehicle.Vehicle;
 import br.com.escuderodev.parking.services.ParkingService;
-import br.com.escuderodev.parking.services.VehicleService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/parking")

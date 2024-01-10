@@ -48,7 +48,6 @@ public class ParkingManagement {
             this.startParking = timeServer.getTimeServer();
             this.stopParking =  this.startParking.plusHours(this.fixedTime);
             this.usageTime= this.fixedTime;
-//            incluir emissão de recibos e alertas
         } else {
             this.startParking = timeServer.getTimeServer();
         }
@@ -67,5 +66,13 @@ public class ParkingManagement {
             System.out.println("Erro: registro de entrada não encontrado!");
 
         }
+    }
+
+    public static void fixedParkingAlert(){
+        System.out.println("Seu período de estacionamento está prestes a encerrar!");
+    }
+
+    public static void variableParkingAlert(){
+        System.out.println("Seu período de estacionamento será renovado em 5 minutos caso não seja encerrado!");
     }
 }
