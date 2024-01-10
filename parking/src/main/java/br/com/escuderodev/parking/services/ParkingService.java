@@ -1,10 +1,12 @@
 package br.com.escuderodev.parking.services;
 
+import br.com.escuderodev.parking.models.email.EmailDetails;
 import br.com.escuderodev.parking.models.parking.ParkingListData;
 import br.com.escuderodev.parking.models.parking.ParkingManagement;
 import br.com.escuderodev.parking.models.parking.ParkingRegistrationData;
 import br.com.escuderodev.parking.models.parking.ParkingRepository;
 import br.com.escuderodev.parking.models.vehicle.VehicleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -18,6 +20,9 @@ import java.util.concurrent.TimeUnit;
 public class ParkingService {
     private ParkingRepository parkingRepository;
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public ParkingService(ParkingRepository parkingRepository, VehicleRepository vehicleRepository) {
         this.parkingRepository = parkingRepository;
@@ -35,7 +40,50 @@ public class ParkingService {
     public ParkingManagement create(ParkingRegistrationData data, Long id) {
         var typedVehicle = vehicleRepository.getReferenceById(id);
         var parking = new ParkingManagement(typedVehicle, data);
-        return parkingRepository.save(parking);
+        var parkingSaved = parkingRepository.save(parking);
+
+        var email = new EmailDetails();
+
+        if (parkingSaved.getFixedTime() != null && parkingSaved.getFixedTime() > 0) {
+            email.setRecipient("moisesaccorci@gmail.com");
+            email.setSubject("Registro de Parking Fixo");
+            email.setMessageBody(String.format("""
+                                                === Você iniciou um Estacionamento com Preço Fixo ===
+                                                
+                                                Id: %d
+                                                Veículo: %s
+                                                Modelo: %s
+                                                Placa: %s
+                                                Condutor: %s
+                                                Valor por hora R$: %.2f
+                                                Tempo utilizado em horas: %d
+                                                Valor a pagar R$: %.2f
+                                                
+                                                """, parkingSaved.getId(), parkingSaved.getVehicle().getBrand(), parkingSaved.getVehicle().getModel(), parkingSaved.getVehicle().getPlate(),
+                                                    parkingSaved.getVehicle().getDriver().getName(), parkingSaved.getFixedParkingPrice(),
+                                                    parkingSaved.getUsageTime(), parkingSaved.getAmountToPay()));
+            emailService.sendMail(email);
+        } else {
+            email.setRecipient("moisesaccorci@gmail.com");
+            email.setSubject("Registro de Parking Variável");
+            email.setMessageBody(String.format("""
+                                                === Você iniciou um Estacionamento com Preço Variável ===
+                                                
+                                                Id: %d
+                                                Veículo: %s
+                                                Modelo: %s
+                                                Placa: %s
+                                                Condutor: %s
+                                                Valor por hora R$: %.2f
+                                                
+                                                Obs.: O valor a pagar será informado quando o parking for encerrado!
+                                                """, parkingSaved.getId(), parkingSaved.getVehicle().getBrand(), parkingSaved.getVehicle().getModel(), parkingSaved.getVehicle().getPlate(),
+                    parkingSaved.getVehicle().getDriver().getName(), parkingSaved.getVariableParkingPrice()));
+            emailService.sendMail(email);
+        }
+
+//        return parkingRepository.save(parking);
+        return parkingSaved;
     }
 
     public ParkingManagement update(Long id) {
