@@ -1,6 +1,5 @@
 package br.com.escuderodev.parking.services;
 
-import br.com.escuderodev.parking.models.email.EmailDetails;
 import br.com.escuderodev.parking.models.notification.SMSRequest;
 import br.com.escuderodev.parking.models.parking.*;
 import br.com.escuderodev.parking.models.vehicle.VehicleRepository;
@@ -10,17 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class ParkingService {
     private ParkingRepository parkingRepository;
     private VehicleRepository vehicleRepository;
-
-    @Autowired
-    private EmailService emailService;
 
     @Autowired
     private TwilioService twilioService;
@@ -45,11 +38,10 @@ public class ParkingService {
         var parking = new ParkingManagement(typedVehicle, data);
         var parkingSaved = parkingRepository.save(parking);
 
-        var email = new EmailDetails();
         var sms = new SMSRequest();
 
         if (parkingSaved.getFixedTime() != null && parkingSaved.getFixedTime() > 0) {
-            sms.setTo("+5511955005284");
+            sms.setTo(typedVehicle.getDriver().getPhone());
             sms.setMessage(String.format("""
                                                 === Você iniciou um Estacionamento com Preço Fixo ===
                                                 
@@ -68,7 +60,7 @@ public class ParkingService {
             twilioService.sendSMS(sms.getTo(), sms.getMessage());
 
         } else {
-            sms.setTo("+5511955005284");
+            sms.setTo(typedVehicle.getDriver().getPhone());
             sms.setMessage(String.format("""
                                                 === Você iniciou um Estacionamento com Preço Variável ===
                                                 
