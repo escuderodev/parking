@@ -1,6 +1,7 @@
 package br.com.escuderodev.parking.services;
 
 import br.com.escuderodev.parking.models.email.EmailDetails;
+import br.com.escuderodev.parking.models.notification.SMSRequest;
 import br.com.escuderodev.parking.models.parking.*;
 import br.com.escuderodev.parking.models.vehicle.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class ParkingService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private TwilioService twilioService;
 
     public ParkingService(ParkingRepository parkingRepository, VehicleRepository vehicleRepository) {
         this.parkingRepository = parkingRepository;
@@ -42,11 +46,11 @@ public class ParkingService {
         var parkingSaved = parkingRepository.save(parking);
 
         var email = new EmailDetails();
+        var sms = new SMSRequest();
 
         if (parkingSaved.getFixedTime() != null && parkingSaved.getFixedTime() > 0) {
-            email.setRecipient("escuderodev@gmail.com");
-            email.setSubject("Registro de Parking Fixo");
-            email.setMessageBody(String.format("""
+            sms.setTo("+5511955005284");
+            sms.setMessage(String.format("""
                                                 === Você iniciou um Estacionamento com Preço Fixo ===
                                                 
                                                 Id: %d
@@ -59,13 +63,13 @@ public class ParkingService {
                                                 Valor a pagar R$: %.2f
                                                 
                                                 """, parkingSaved.getId(), parkingSaved.getVehicle().getBrand(), parkingSaved.getVehicle().getModel(), parkingSaved.getVehicle().getPlate(),
-                                                    parkingSaved.getVehicle().getDriver().getName(), parkingSaved.getFixedParkingPrice(),
-                                                    parkingSaved.getUsageTime(), parkingSaved.getAmountToPay()));
-            emailService.sendMail(email);
+                    parkingSaved.getVehicle().getDriver().getName(), parkingSaved.getFixedParkingPrice(), parkingSaved.getUsageTime(), parkingSaved.getAmountToPay()));
+
+            twilioService.sendSMS(sms.getTo(), sms.getMessage());
+
         } else {
-            email.setRecipient("escuderodev@gmail.com");
-            email.setSubject("Registro de Parking Variável");
-            email.setMessageBody(String.format("""
+            sms.setTo("+5511955005284");
+            sms.setMessage(String.format("""
                                                 === Você iniciou um Estacionamento com Preço Variável ===
                                                 
                                                 Id: %d
@@ -78,7 +82,8 @@ public class ParkingService {
                                                 Obs.: O valor a pagar será informado quando o parking for encerrado!
                                                 """, parkingSaved.getId(), parkingSaved.getVehicle().getBrand(), parkingSaved.getVehicle().getModel(), parkingSaved.getVehicle().getPlate(),
                     parkingSaved.getVehicle().getDriver().getName(), parkingSaved.getVariableParkingPrice()));
-            emailService.sendMail(email);
+
+            twilioService.sendSMS(sms.getTo(), sms.getMessage());
         }
         return parkingSaved;
     }
