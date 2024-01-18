@@ -1,12 +1,10 @@
 package br.com.escuderodev.parking.models.parking;
 
 import br.com.escuderodev.parking.models.vehicle.Vehicle;
-import br.com.escuderodev.parking.services.EmailService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.Duration;

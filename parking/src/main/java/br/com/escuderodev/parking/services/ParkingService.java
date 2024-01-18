@@ -1,10 +1,7 @@
 package br.com.escuderodev.parking.services;
 
 import br.com.escuderodev.parking.models.email.EmailDetails;
-import br.com.escuderodev.parking.models.parking.ParkingListData;
-import br.com.escuderodev.parking.models.parking.ParkingManagement;
-import br.com.escuderodev.parking.models.parking.ParkingRegistrationData;
-import br.com.escuderodev.parking.models.parking.ParkingRepository;
+import br.com.escuderodev.parking.models.parking.*;
 import br.com.escuderodev.parking.models.vehicle.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,6 +35,8 @@ public class ParkingService {
     }
 
     public ParkingManagement create(ParkingRegistrationData data, Long id) {
+        TimeServer timeServer = new TimeServer();
+
         var typedVehicle = vehicleRepository.getReferenceById(id);
         var parking = new ParkingManagement(typedVehicle, data);
         var parkingSaved = parkingRepository.save(parking);
@@ -45,7 +44,7 @@ public class ParkingService {
         var email = new EmailDetails();
 
         if (parkingSaved.getFixedTime() != null && parkingSaved.getFixedTime() > 0) {
-            email.setRecipient("moisesaccorci@gmail.com");
+            email.setRecipient("escuderodev@gmail.com");
             email.setSubject("Registro de Parking Fixo");
             email.setMessageBody(String.format("""
                                                 === Você iniciou um Estacionamento com Preço Fixo ===
@@ -64,7 +63,7 @@ public class ParkingService {
                                                     parkingSaved.getUsageTime(), parkingSaved.getAmountToPay()));
             emailService.sendMail(email);
         } else {
-            email.setRecipient("moisesaccorci@gmail.com");
+            email.setRecipient("escuderodev@gmail.com");
             email.setSubject("Registro de Parking Variável");
             email.setMessageBody(String.format("""
                                                 === Você iniciou um Estacionamento com Preço Variável ===
