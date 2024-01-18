@@ -80,8 +80,6 @@ public class ParkingService {
                     parkingSaved.getVehicle().getDriver().getName(), parkingSaved.getVariableParkingPrice()));
             emailService.sendMail(email);
         }
-
-//        return parkingRepository.save(parking);
         return parkingSaved;
     }
 
